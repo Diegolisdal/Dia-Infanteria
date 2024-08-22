@@ -1,22 +1,19 @@
-
-
-// Your web app's Firebase configuration
+// Configura Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyCDGtD1nbjIS_rbRMT3_50UED7lB9tU0fw",
-  authDomain: "obsequiodiadelarma.firebaseapp.com",
-  databaseURL: "https://obsequiodiadelarma-default-rtdb.firebaseio.com",
-  projectId: "obsequiodiadelarma",
-  storageBucket: "obsequiodiadelarma.appspot.com",
-  messagingSenderId: "300494048059",
-  appId: "1:300494048059:web:3d6b8cc0e84f625f1fc51e"
+    apiKey: "AIzaSyCDGtD1nbjIS_rbRMT3_50UED7lB9tU0fw",
+    authDomain: "obsequiodiadelarma.firebaseapp.com",
+    databaseURL: "https://obsequiodiadelarma-default-rtdb.firebaseio.com",
+    projectId: "obsequiodiadelarma",
+    storageBucket: "obsequiodiadelarma.appspot.com",
+    messagingSenderId: "300494048059",
+    appId: "1:300494048059:web:3d6b8cc0e84f625f1fc51e"
 };
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
 
 // Inicializa Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
+
+let selectedVoteCell;
 
 // Cargar los datos almacenados al iniciar
 document.addEventListener('DOMContentLoaded', function() {
@@ -151,3 +148,5 @@ document.getElementById('confirmVote').addEventListener('click', function() {
         alert('Please select a name before confirming your vote.');
     }
 });
+
+document.getElement
