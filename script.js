@@ -1,17 +1,21 @@
-// Configura Firebase
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyCDGtD1nbjIS_rbRMT3_50UED7lB9tU0fw",
-    authDomain: "obsequiodiadelarma.firebaseapp.com",
-    databaseURL: "https://obsequiodiadelarma-default-rtdb.firebaseio.com",
-    projectId: "obsequiodiadelarma",
-    storageBucket: "obsequiodiadelarma.appspot.com",
-    messagingSenderId: "300494048059",
-    appId: "1:300494048059:web:3d6b8cc0e84f625f1fc51e"
+  apiKey: "AIzaSyCDGtD1nbjIS_rbRMT3_50UED7lB9tU0fw",
+  authDomain: "obsequiodiadelarma.firebaseapp.com",
+  databaseURL: "https://obsequiodiadelarma-default-rtdb.firebaseio.com",
+  projectId: "obsequiodiadelarma",
+  storageBucket: "obsequiodiadelarma.appspot.com",
+  messagingSenderId: "300494048059",
+  appId: "1:300494048059:web:3d6b8cc0e84f625f1fc51e"
 };
 
-// Inicializa Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
 let selectedVoteCell;
 
