@@ -15,7 +15,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 const app = initializeApp(firebaseConfig);
+console.log("Firebase initialized");
 
 let selectedVoteCell;
 
