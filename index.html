@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Gift List</h1>
+        <form id="giftForm">
+            <div class="form-group">
+                <input type="text" id="itemName" placeholder="Item Name" required>
+                <input type="number" id="itemPrice" placeholder="Price" required>
+            </div>
+            <div class="form-group">
+                <input type="url" id="itemUrl" placeholder="Item URL" required>
+                <input type="file" id="itemImage" accept="image/*" required>
+            </div>
+            <button type="submit">Add Item</button>
+        </form>
+
+        <table id="giftTable">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Image</th>
+                    <th>URL</th>
+                    <th>Votes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Items will be added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for selecting the person -->
+    <div id="voteModal" class="modal">
+        <div class="modal-content">
+            <h2>Select Your Name</h2>
+            <select id="personSelect">
+                <option value="">Choose your name</option>
+                <option value="Person 1">Person 1</option>
+                <option value="Person 2">Person 2</option>
+                <option value="Person 3">Person 3</option>
+                <option value="Person 4">Person 4</option>
+                <option value="Person 5">Person 5</option>
+                <option value="Person 6">Person 6</option>
+                <option value="Person 7">Person 7</option>
+                <option value="Person 8">Person 8</option>
+            </select>
+            <button id="confirmVote">Confirm Vote</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
