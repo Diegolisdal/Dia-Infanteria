@@ -163,26 +163,48 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     actionsCell.appendChild(deleteButton);
 }
 
-// Función para eliminar un voto específico de un votante
-function removeVote(itemId, voterToRemove) {
-    const itemRef = database.ref('items/' + itemId);
-    itemRef.once('value').then(snapshot => {
-        const item = snapshot.val();
-        if (item && Array.isArray(item.voters)) {
-            const updatedVoters = item.voters.filter(voter => voter !== voterToRemove);
-            itemRef.update({
-                voters: updatedVoters,
-                votes: updatedVoters.length
-            }).then(() => {
-                console.log("Vote removed successfully.");
-                // Actualizar la tabla después de la eliminación
-                loadItemsFromDatabase();
-            }).catch((error) => {
-                console.error("Error removing vote: ", error);
-            });
-        }
-    });
+// Función para mostrar el modal de votación
+function showModal() {
+    document.getElementById('voteModal').style.display = 'block';
 }
+
+// Función para ocultar el modal de votación
+function hideModal() {
+    document.getElementById('voteModal').style.display = 'none';
+}
+
+// Confirmar el voto del usuario
+document.getElementById('confirmVote').addEventListener('click', function() {
+    const personSelect = document.getElementById('personSelect');
+    const selectedPerson = personSelect.value;
+    
+    if (selectedPerson) {
+        const id = selectedVoteCell.dataset.id;
+        const voters = JSON.parse(selectedVoteCell.dataset.voters || '[]'); // Manejo seguro de JSON
+
+        if (!voters.includes(selectedPerson)) { // Solo añade si no ha votado aún
+            voters.push(selectedPerson);
+            const newVotes = voters.length;
+            selectedVoteCell.textContent = `${newVotes} (${voters.join(", ")})`;
+            selectedVoteCell.dataset.voters = JSON.stringify(voters);
+
+            // Actualizar en la base de datos
+            database.ref('items/' + id).update({
+                votes: newVotes,
+                voters: voters
+            }).then(() => {
+                console.log("Vote updated successfully.");
+                hideModal();
+            }).catch((error) => {
+                console.error("Error updating vote: ", error);
+            });
+        } else {
+            alert('Esta persona ya ha votado por este ítem.');
+        }
+    } else {
+        alert('Please select a name before confirming your vote.');
+    }
+});
 
 
 function showModal() {
