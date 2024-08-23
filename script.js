@@ -32,15 +32,20 @@ document.getElementById('giftForm').addEventListener('submit', function(e) {
     const itemPrice = document.getElementById('itemPrice').value;
     const itemUrl = document.getElementById('itemUrl').value;
     const itemImage = document.getElementById('itemImage').files[0];
-    const reader = new FileReader();
 
-    reader.onload = function(event) {
-        const imageDataUrl = event.target.result;
-        addItemToDatabase(itemName, itemPrice, imageDataUrl, itemUrl);
-        document.getElementById('giftForm').reset();
-    };
+    if (itemImage) {
+        const reader = new FileReader();
 
-    reader.readAsDataURL(itemImage);
+        reader.onload = function(event) {
+            const imageDataUrl = event.target.result;
+            addItemToDatabase(itemName, itemPrice, imageDataUrl, itemUrl);
+            document.getElementById('giftForm').reset();
+        };
+
+        reader.readAsDataURL(itemImage);
+    } else {
+        alert('Por favor, selecciona una imagen.');
+    }
 });
 
 function addItemToDatabase(name, price, image, url) {
@@ -54,7 +59,13 @@ function addItemToDatabase(name, price, image, url) {
     };
 
     const newItemRef = push(ref(database, 'items')); // Uso de push y ref correctos
-    set(newItemRef, newItem); // Uso de set correcto
+    set(newItemRef, newItem)
+        .then(() => {
+            console.log("Item added successfully.");
+        })
+        .catch((error) => {
+            console.error("Error adding item: ", error);
+        });
 }
 
 function loadItemsFromDatabase() {
@@ -150,6 +161,6 @@ document.getElementById('confirmVote').addEventListener('click', function() {
             alert('Esta persona ya ha votado por este ítem.');
         }
     } else {
-        alert('Please select a name before confirming your vote.');
+        alert('Por favor selecciona un nombre antes de confirmar tu voto.');
     }
 });
