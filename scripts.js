@@ -179,26 +179,34 @@ document.getElementById('confirmVote').addEventListener('click', function() {
     if (selectedPerson) {
         const id = selectedItemId;
         const voteCell = selectedVoteCell;
-        const voters = JSON.parse(voteCell.dataset.voters || '[]'); // Manejo seguro de JSON
+        database.ref('items/' + id).once('value').then((snapshot) => {
+            const item = snapshot.val();
+            if (item) {
+                let voters = item.voters || [];
+                let votes = item.votes || 0;
 
-        if (!voters.includes(selectedPerson)) { // Solo añade si no ha votado aún
-            voters.push(selectedPerson);
-            const newVotes = voters.length;
-            updateVoteCell(voteCell, id, newVotes, voters);
+                if (!voters.includes(selectedPerson)) { // Solo añade si no ha votado aún
+                    voters.push(selectedPerson);
+                    votes = voters.length; // Actualizar el conteo de votos
+                    updateVoteCell(voteCell, id, votes, voters);
 
-            // Actualizar en la base de datos
-            database.ref('items/' + id).update({
-                votes: newVotes,
-                voters: voters
-            }).then(() => {
-                console.log("Vote updated successfully.");
-                hideModal();
-            }).catch((error) => {
-                console.error("Error updating vote: ", error);
-            });
-        } else {
-            alert('Esta persona ya ha votado por este ítem.');
-        }
+                    // Actualizar en la base de datos
+                    database.ref('items/' + id).update({
+                        votes: votes,
+                        voters: voters
+                    }).then(() => {
+                        console.log("Vote updated successfully.");
+                        hideModal();
+                    }).catch((error) => {
+                        console.error("Error updating vote: ", error);
+                    });
+                } else {
+                    alert('Esta persona ya ha votado por este ítem.');
+                }
+            }
+        }).catch((error) => {
+            console.error("Error fetching item: ", error);
+        });
     } else {
         alert('Por favor, selecciona un nombre antes de confirmar tu voto.');
     }
