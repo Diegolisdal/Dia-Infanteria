@@ -158,7 +158,8 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
 // Función para actualizar el contenido de la celda de votos
 function updateVoteCell(voteCell, id, votes, voters) {
     // Mostrar el conteo de votos y una lista de votantes
-    voteCell.innerHTML = `${votes} votes (${voters.join(", ")})<br>${voters.map(voter => `<button class="remove-vote" data-item-id="${id}" data-voter="${voter}">Remove</button>`).join('<br>')}`;
+    voteCell.innerHTML = `${votes} votes (${voters.join(", ")})<br>
+    <button class="remove-vote" data-item-id="${id}">Remove Vote</button>`;
 }
 
 // Función para mostrar el modal de votación
@@ -216,32 +217,36 @@ document.getElementById('confirmVote').addEventListener('click', function() {
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('remove-vote')) {
         const itemId = e.target.getAttribute('data-item-id');
-        const voter = e.target.getAttribute('data-voter');
-        
-        database.ref('items/' + itemId).once('value').then((snapshot) => {
-            const item = snapshot.val();
-            if (item) {
-                let voters = item.voters || [];
-                const index = voters.indexOf(voter);
-                if (index > -1) {
-                    voters.splice(index, 1);
-                    const newVotes = voters.length;
+        const removeVote = prompt("Enter the name of the person whose vote you want to remove:", "");
 
-                    // Actualizar en la base de datos
-                    database.ref('items/' + itemId).update({
-                        votes: newVotes,
-                        voters: voters
-                    }).then(() => {
-                        console.log("Vote removed successfully.");
-                        // Recargar los ítems para reflejar el cambio
-                        loadItemsFromDatabase();
-                    }).catch((error) => {
-                        console.error("Error removing vote: ", error);
-                    });
+        if (removeVote) {
+            database.ref('items/' + itemId).once('value').then((snapshot) => {
+                const item = snapshot.val();
+                if (item) {
+                    let voters = item.voters || [];
+                    const index = voters.indexOf(removeVote);
+                    if (index > -1) {
+                        voters.splice(index, 1);
+                        const newVotes = voters.length;
+
+                        // Actualizar en la base de datos
+                        database.ref('items/' + itemId).update({
+                            votes: newVotes,
+                            voters: voters
+                        }).then(() => {
+                            console.log("Vote removed successfully.");
+                            // Recargar los ítems para reflejar el cambio
+                            loadItemsFromDatabase();
+                        }).catch((error) => {
+                            console.error("Error removing vote: ", error);
+                        });
+                    } else {
+                        alert('Voter not found.');
+                    }
                 }
-            }
-        }).catch((error) => {
-            console.error("Error fetching item: ", error);
-        });
+            }).catch((error) => {
+                console.error("Error fetching item: ", error);
+            });
+        }
     }
 });
