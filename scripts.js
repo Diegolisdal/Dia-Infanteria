@@ -158,7 +158,7 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
 // Función para actualizar el contenido de la celda de votos
 function updateVoteCell(voteCell, id, votes, voters) {
     // Mostrar el conteo de votos y una lista de votantes
-    voteCell.innerHTML = `${votes} votes (${voters.join(", ")})<br>
+    voteCell.innerHTML = `${votes} voto/s (${voters.join(", ")})<br>
     <button class="remove-vote" data-item-id="${id}">Eliminar voto</button>`;
 }
 
