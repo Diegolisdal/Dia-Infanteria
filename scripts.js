@@ -15,6 +15,7 @@ const database = firebase.database();
 console.log("Firebase initialized");
 
 let selectedVoteCell;
+let selectedItemId;
 
 // Cargar los datos almacenados al iniciar
 document.addEventListener('DOMContentLoaded', function() {
@@ -121,7 +122,7 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     }
 
     // Mostrar el conteo de votos y una lista de votantes
-    voteCell.innerHTML = `${votes} votes<br>${voters.map(voter => `${voter} <button class="remove-vote" data-item-id="${id}" data-voter="${voter}">Remove</button>`).join('<br>')}`;
+    updateVoteCell(voteCell, id, votes, voters);
 
     // Agregar un botón para votar
     const voteButton = document.createElement('button');
@@ -154,6 +155,12 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     actionsCell.appendChild(deleteButton);
 }
 
+// Función para actualizar el contenido de la celda de votos
+function updateVoteCell(voteCell, id, votes, voters) {
+    // Mostrar el conteo de votos y una lista de votantes
+    voteCell.innerHTML = `${votes} votes (${voters.join(", ")})<br>${voters.map(voter => `<button class="remove-vote" data-item-id="${id}" data-voter="${voter}">Remove</button>`).join('<br>')}`;
+}
+
 // Función para mostrar el modal de votación
 function showModal() {
     document.getElementById('voteModal').style.display = 'block';
@@ -171,13 +178,13 @@ document.getElementById('confirmVote').addEventListener('click', function() {
     
     if (selectedPerson) {
         const id = selectedItemId;
-        const voters = JSON.parse(selectedVoteCell.dataset.voters || '[]'); // Manejo seguro de JSON
+        const voteCell = selectedVoteCell;
+        const voters = JSON.parse(voteCell.dataset.voters || '[]'); // Manejo seguro de JSON
 
         if (!voters.includes(selectedPerson)) { // Solo añade si no ha votado aún
             voters.push(selectedPerson);
             const newVotes = voters.length;
-            selectedVoteCell.innerHTML = `${newVotes} votes<br>${voters.map(voter => `${voter} <button class="remove-vote" data-item-id="${id}" data-voter="${voter}">Remove</button>`).join('<br>')}`;
-            selectedVoteCell.dataset.voters = JSON.stringify(voters);
+            updateVoteCell(voteCell, id, newVotes, voters);
 
             // Actualizar en la base de datos
             database.ref('items/' + id).update({
@@ -193,7 +200,7 @@ document.getElementById('confirmVote').addEventListener('click', function() {
             alert('Esta persona ya ha votado por este ítem.');
         }
     } else {
-        alert('Please select a name before confirming your vote.');
+        alert('Por favor, selecciona un nombre antes de confirmar tu voto.');
     }
 });
 
@@ -228,43 +235,5 @@ document.addEventListener('click', function(e) {
         }).catch((error) => {
             console.error("Error fetching item: ", error);
         });
-    }
-});
-
-
-function showModal() {
-    document.getElementById('voteModal').style.display = 'block';
-}
-
-function hideModal() {
-    document.getElementById('voteModal').style.display = 'none';
-}
-
-document.getElementById('confirmVote').addEventListener('click', function() {
-    const personSelect = document.getElementById('personSelect');
-    const selectedPerson = personSelect.value;
-    
-    if (selectedPerson) {
-        const id = selectedVoteCell.dataset.id;
-        const voters = JSON.parse(selectedVoteCell.dataset.voters);
-
-        if (!voters.includes(selectedPerson)) { // Solo añade si no ha votado aún
-            voters.push(selectedPerson);
-            const newVotes = voters.length;
-            selectedVoteCell.textContent = `${newVotes} (${voters.join(", ")})`;
-            selectedVoteCell.dataset.voters = JSON.stringify(voters);
-
-            // Actualizar en la base de datos
-            database.ref('items/' + id).update({
-                votes: newVotes,
-                voters: voters
-            });
-
-            hideModal();
-        } else {
-            alert('Esta persona ya ha votado por este ítem.');
-        }
-    } else {
-        alert('Por favor, selecciona un nombre antes de confirmar tu voto.');
     }
 });
