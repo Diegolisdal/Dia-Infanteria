@@ -114,7 +114,7 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     urlCell.appendChild(link);
 
     const voteCell = newRow.insertCell(4);
-    
+
     // Asegurar que voters sea un array antes de usar join
     if (!Array.isArray(voters)) {
         voters = []; // Si no es un array, inicializar como uno vacío
@@ -131,6 +131,17 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
         showModal();
     });
     voteCell.appendChild(voteButton);
+
+    // Agregar un botón para eliminar un voto
+    voters.forEach((voter, index) => {
+        const deleteVoteButton = document.createElement('button');
+        deleteVoteButton.textContent = 'Remove Vote';
+        deleteVoteButton.classList.add('remove-vote');
+        deleteVoteButton.addEventListener('click', function() {
+            removeVote(id, voter);
+        });
+        voteCell.appendChild(deleteVoteButton);
+    });
 
     const actionsCell = newRow.insertCell(5);
     const deleteButton = document.createElement('button');
@@ -149,6 +160,27 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
         }
     });
     actionsCell.appendChild(deleteButton);
+}
+
+// Función para eliminar un voto
+function removeVote(itemId, voterToRemove) {
+    const itemRef = database.ref('items/' + itemId);
+    itemRef.once('value').then(snapshot => {
+        const item = snapshot.val();
+        if (item && Array.isArray(item.voters)) {
+            const updatedVoters = item.voters.filter(voter => voter !== voterToRemove);
+            itemRef.update({
+                voters: updatedVoters,
+                votes: updatedVoters.length
+            }).then(() => {
+                console.log("Vote removed successfully.");
+                // Actualizar la tabla después de la eliminación
+                loadItemsFromDatabase();
+            }).catch((error) => {
+                console.error("Error removing vote: ", error);
+            });
+        }
+    });
 }
 
 
