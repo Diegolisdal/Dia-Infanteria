@@ -121,7 +121,7 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     }
 
     // Mostrar el conteo de votos y una lista de votantes
-    voteCell.innerHTML = `${votes} (${voters.join(", ")})`;
+    voteCell.innerHTML = `${votes} votes<br>${voters.map(voter => `${voter} <button class="remove-vote" data-item-id="${id}" data-voter="${voter}">Remove</button>`).join('<br>')}`;
 
     // Agregar un botón para votar
     const voteButton = document.createElement('button');
@@ -129,21 +129,12 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     voteButton.classList.add('vote');
     voteButton.addEventListener('click', function() {
         selectedVoteCell = voteCell;
+        selectedItemId = id;
         showModal();
     });
     voteCell.appendChild(voteButton);
 
-    // Agregar un botón para eliminar un voto para cada votante
-    voters.forEach((voter) => {
-        const removeVoteButton = document.createElement('button');
-        removeVoteButton.textContent = 'Remove Vote';
-        removeVoteButton.classList.add('remove-vote');
-        removeVoteButton.addEventListener('click', function() {
-            removeVote(id, voter);
-        });
-        voteCell.appendChild(removeVoteButton);
-    });
-
+    // Agregar un botón para eliminar el ítem
     const actionsCell = newRow.insertCell(5);
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete';
@@ -179,13 +170,13 @@ document.getElementById('confirmVote').addEventListener('click', function() {
     const selectedPerson = personSelect.value;
     
     if (selectedPerson) {
-        const id = selectedVoteCell.dataset.id;
+        const id = selectedItemId;
         const voters = JSON.parse(selectedVoteCell.dataset.voters || '[]'); // Manejo seguro de JSON
 
         if (!voters.includes(selectedPerson)) { // Solo añade si no ha votado aún
             voters.push(selectedPerson);
             const newVotes = voters.length;
-            selectedVoteCell.textContent = `${newVotes} (${voters.join(", ")})`;
+            selectedVoteCell.innerHTML = `${newVotes} votes<br>${voters.map(voter => `${voter} <button class="remove-vote" data-item-id="${id}" data-voter="${voter}">Remove</button>`).join('<br>')}`;
             selectedVoteCell.dataset.voters = JSON.stringify(voters);
 
             // Actualizar en la base de datos
@@ -203,6 +194,40 @@ document.getElementById('confirmVote').addEventListener('click', function() {
         }
     } else {
         alert('Please select a name before confirming your vote.');
+    }
+});
+
+// Eliminar un voto específico
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-vote')) {
+        const itemId = e.target.getAttribute('data-item-id');
+        const voter = e.target.getAttribute('data-voter');
+        
+        database.ref('items/' + itemId).once('value').then((snapshot) => {
+            const item = snapshot.val();
+            if (item) {
+                let voters = item.voters || [];
+                const index = voters.indexOf(voter);
+                if (index > -1) {
+                    voters.splice(index, 1);
+                    const newVotes = voters.length;
+
+                    // Actualizar en la base de datos
+                    database.ref('items/' + itemId).update({
+                        votes: newVotes,
+                        voters: voters
+                    }).then(() => {
+                        console.log("Vote removed successfully.");
+                        // Recargar los ítems para reflejar el cambio
+                        loadItemsFromDatabase();
+                    }).catch((error) => {
+                        console.error("Error removing vote: ", error);
+                    });
+                }
+            }
+        }).catch((error) => {
+            console.error("Error fetching item: ", error);
+        });
     }
 });
 
