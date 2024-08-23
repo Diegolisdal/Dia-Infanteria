@@ -1,9 +1,8 @@
-// Import the functions you need from the SDKs you need
+// Importar funciones necesarias desde el SDK de Firebase
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getDatabase, ref, push, set, onValue, remove, update } from "firebase/database";
 
-// Your web app's Firebase configuration
+// Tu configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCDGtD1nbjIS_rbRMT3_50UED7lB9tU0fw",
   authDomain: "obsequiodiadelarma.firebaseapp.com",
@@ -14,9 +13,9 @@ const firebaseConfig = {
   appId: "1:300494048059:web:3d6b8cc0e84f625f1fc51e"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 console.log("Firebase initialized");
 
 let selectedVoteCell;
@@ -54,13 +53,13 @@ function addItemToDatabase(name, price, image, url) {
         voters: []
     };
 
-    const newItemRef = database.ref('items').push();
-    newItemRef.set(newItem);
+    const newItemRef = push(ref(database, 'items')); // Uso de push y ref correctos
+    set(newItemRef, newItem); // Uso de set correcto
 }
 
 function loadItemsFromDatabase() {
-    const itemsRef = database.ref('items');
-    itemsRef.on('value', function(snapshot) {
+    const itemsRef = ref(database, 'items');
+    onValue(itemsRef, function(snapshot) {
         const items = snapshot.val();
         const tableBody = document.getElementById('giftTable').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = ''; // Limpiar la tabla
@@ -113,7 +112,7 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     deleteButton.textContent = 'Delete';
     deleteButton.classList.add('delete');
     deleteButton.addEventListener('click', function() {
-        database.ref('items/' + id).remove();
+        remove(ref(database, 'items/' + id)); // Uso correcto de remove y ref
     });
     actionsCell.appendChild(deleteButton);
 }
@@ -141,7 +140,7 @@ document.getElementById('confirmVote').addEventListener('click', function() {
             selectedVoteCell.dataset.voters = JSON.stringify(voters);
 
             // Actualizar en la base de datos
-            database.ref('items/' + id).update({
+            update(ref(database, 'items/' + id), { // Uso correcto de update y ref
                 votes: newVotes,
                 voters: voters
             });
@@ -154,5 +153,3 @@ document.getElementById('confirmVote').addEventListener('click', function() {
         alert('Please select a name before confirming your vote.');
     }
 });
-
-document.getElement
