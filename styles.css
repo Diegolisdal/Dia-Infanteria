@@ -125,5 +125,9 @@ img {
 
     .modal-content {
         width: 90%;
+        font-size: 1px;
+    }
+    .modal-content button {
+        
     }
 }
