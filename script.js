@@ -1,21 +1,17 @@
-// Importar funciones necesarias desde el SDK de Firebase
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, push, set, onValue, remove, update } from "firebase/database";
-
 // Tu configuración de Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyCDGtD1nbjIS_rbRMT3_50UED7lB9tU0fw",
-  authDomain: "obsequiodiadelarma.firebaseapp.com",
-  databaseURL: "https://obsequiodiadelarma-default-rtdb.firebaseio.com",
-  projectId: "obsequiodiadelarma",
-  storageBucket: "obsequiodiadelarma.appspot.com",
-  messagingSenderId: "300494048059",
-  appId: "1:300494048059:web:3d6b8cc0e84f625f1fc51e"
+    apiKey: "AIzaSyCDGtD1nbjIS_rbRMT3_50UED7lB9tU0fw",
+    authDomain: "obsequiodiadelarma.firebaseapp.com",
+    databaseURL: "https://obsequiodiadelarma-default-rtdb.firebaseio.com",
+    projectId: "obsequiodiadelarma",
+    storageBucket: "obsequiodiadelarma.appspot.com",
+    messagingSenderId: "300494048059",
+    appId: "1:300494048059:web:3d6b8cc0e84f625f1fc51e"
 };
 
 // Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+const app = firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 console.log("Firebase initialized");
 
 let selectedVoteCell;
@@ -58,8 +54,8 @@ function addItemToDatabase(name, price, image, url) {
         voters: []
     };
 
-    const newItemRef = push(ref(database, 'items')); // Uso de push y ref correctos
-    set(newItemRef, newItem)
+    const newItemRef = database.ref('items').push(); // Uso de push y ref correctos
+    newItemRef.set(newItem)
         .then(() => {
             console.log("Item added successfully.");
         })
@@ -69,8 +65,8 @@ function addItemToDatabase(name, price, image, url) {
 }
 
 function loadItemsFromDatabase() {
-    const itemsRef = ref(database, 'items');
-    onValue(itemsRef, function(snapshot) {
+    const itemsRef = database.ref('items');
+    itemsRef.on('value', function(snapshot) {
         const items = snapshot.val();
         const tableBody = document.getElementById('giftTable').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = ''; // Limpiar la tabla
@@ -123,7 +119,7 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     deleteButton.textContent = 'Delete';
     deleteButton.classList.add('delete');
     deleteButton.addEventListener('click', function() {
-        remove(ref(database, 'items/' + id)); // Uso correcto de remove y ref
+        database.ref('items/' + id).remove();
     });
     actionsCell.appendChild(deleteButton);
 }
@@ -151,7 +147,7 @@ document.getElementById('confirmVote').addEventListener('click', function() {
             selectedVoteCell.dataset.voters = JSON.stringify(voters);
 
             // Actualizar en la base de datos
-            update(ref(database, 'items/' + id), { // Uso correcto de update y ref
+            database.ref('items/' + id).update({
                 votes: newVotes,
                 voters: voters
             });
