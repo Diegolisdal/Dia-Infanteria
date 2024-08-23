@@ -5,6 +5,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow-x: hidden; /* Evitar desbordamiento horizontal */
 }
 
 h1 {
@@ -25,42 +26,44 @@ input, button, select {
     margin: 5px;
     padding: 10px;
     font-size: 16px;
-    width: calc(50% - 20px); /* Para móviles, se puede ajustar */
-    box-sizing: border-box; /* Asegura que padding no agrande el ancho total */
+    width: calc(50% - 20px);
+    box-sizing: border-box;
 }
 
 button {
-    width: auto; /* Mantiene el ancho de botones más pequeño */
+    width: auto;
 }
 
 table {
     width: 100%;
-    max-width: 800px;
+    max-width: 100%; /* Asegura que la tabla no exceda el ancho de la pantalla */
     border-collapse: collapse;
     margin-bottom: 20px;
+    overflow-x: auto; /* Permite desplazamiento horizontal si es necesario */
 }
 
 th, td {
     padding: 10px;
     text-align: center;
     border: 1px solid #ccc;
+    box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
 }
 
 img {
     max-width: 100px;
-    height: auto; /* Mantener proporción de aspecto */
+    height: auto;
 }
 
 /* Estilos para el modal */
 .modal {
-    display: none; /* Ocultar el modal por defecto */
-    position: fixed; /* Posición fija en la pantalla */
+    display: none;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
-    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
 }
 
 .modal-content {
@@ -71,9 +74,9 @@ img {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Centrar vertical y horizontalmente */
+    transform: translate(-50%, -50%);
     text-align: center;
-    z-index: 1001; /* Asegura que esté por encima del fondo del modal */
+    z-index: 1001;
 }
 
 .modal-content h2 {
@@ -97,28 +100,30 @@ img {
 /* Media Queries para pantallas más pequeñas */
 @media (max-width: 768px) {
     input, button, select {
-        width: calc(100% - 20px); /* Los elementos ocuparán el ancho completo en pantallas más pequeñas */
+        width: calc(100% - 20px);
     }
 
     table {
-        font-size: 14px; /* Reducir el tamaño de la fuente en tablas para móviles */
+        font-size: 14px;
+        display: block; /* Asegura que la tabla sea un contenedor de bloque en pantallas más pequeñas */
+        overflow-x: auto; /* Permite el scroll horizontal en pantallas más pequeñas */
     }
 
     th, td {
-        padding: 8px; /* Reducir padding para evitar desbordamiento */
+        padding: 8px;
     }
 
     img {
-        max-width: 80px; /* Ajustar tamaño de la imagen en móviles */
+        max-width: 80px;
     }
 }
 
 @media (max-width: 480px) {
     h1 {
-        font-size: 24px; /* Reducir el tamaño del título en pantallas muy pequeñas */
+        font-size: 24px;
     }
 
     .modal-content {
-        width: 90%; /* Asegura que el modal se ajuste a pantallas más pequeñas */
+        width: 90%;
     }
 }
