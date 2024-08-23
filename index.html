@@ -8,16 +8,18 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="agregar">
+        <h3>Agregar producto</h3>
+        <!-- Formulario para agregar nuevos regalos -->
+        <form id="giftForm">
+            <input type="text" id="itemName" placeholder="Nombre del regalo" required>
+            <input type="number" step="0.01" id="itemPrice" placeholder="Precio del regalo" required>
+            <input type="url" id="itemUrl" placeholder="URL del regalo">
+            <input type="file" id="itemImage" accept="image/*">
+            <button type="submit">Agregar Regalo</button>
+        </form>
+    </div>
     <h1>Opciones de regalo para el Día del Arma</h1>
-    <!-- Formulario para agregar nuevos regalos -->
-    <form id="giftForm">
-        <input type="text" id="itemName" placeholder="Nombre del regalo" required>
-        <input type="number" step="0.01" id="itemPrice" placeholder="Precio del regalo" required>
-        <input type="url" id="itemUrl" placeholder="URL del regalo">
-        <input type="file" id="itemImage" accept="image/*">
-        <button type="submit">Agregar Regalo</button>
-    </form>
-
     <!-- Tabla para mostrar los regalos -->
     <table id="giftTable">
         <thead>
