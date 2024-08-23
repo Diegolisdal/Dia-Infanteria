@@ -10,7 +10,7 @@ const firebaseConfig = {
 };
 
 // Inicializar Firebase
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 console.log("Firebase initialized");
 
@@ -54,7 +54,7 @@ function addItemToDatabase(name, price, image, url) {
         voters: []
     };
 
-    const newItemRef = database.ref('items').push(); // Uso de push y ref correctos
+    const newItemRef = database.ref('items').push();
     newItemRef.set(newItem)
         .then(() => {
             console.log("Item added successfully.");
@@ -157,6 +157,6 @@ document.getElementById('confirmVote').addEventListener('click', function() {
             alert('Esta persona ya ha votado por este ítem.');
         }
     } else {
-        alert('Por favor selecciona un nombre antes de confirmar tu voto.');
+        alert('Please select a name before confirming your vote.');
     }
 });
