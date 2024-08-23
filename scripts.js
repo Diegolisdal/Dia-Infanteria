@@ -29,10 +29,11 @@ document.getElementById('giftForm').addEventListener('submit', function(e) {
     const itemUrl = document.getElementById('itemUrl').value;
     const itemImage = document.getElementById('itemImage').files[0];
 
+    // Verificar que los campos requeridos no estén vacíos
     if (itemName && itemPrice && itemUrl) {
         if (itemImage) {
             const reader = new FileReader();
-
+            
             reader.onload = function(event) {
                 const imageDataUrl = event.target.result;
                 addItemToDatabase(itemName, itemPrice, imageDataUrl, itemUrl);
@@ -97,6 +98,8 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     if (image) {
         const img = document.createElement('img');
         img.src = image;
+        img.alt = name;
+        img.style.width = "50px";  // Ajusta el tamaño de la imagen para que se vea mejor
         imageCell.appendChild(img);
     } else {
         imageCell.textContent = 'No image';
@@ -128,7 +131,16 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     deleteButton.textContent = 'Delete';
     deleteButton.classList.add('delete');
     deleteButton.addEventListener('click', function() {
-        database.ref('items/' + id).remove();
+        // Confirmar eliminación antes de proceder
+        if (confirm('¿Estás seguro de que deseas eliminar este artículo?')) {
+            database.ref('items/' + id).remove()
+                .then(() => {
+                    console.log("Item removed successfully.");
+                })
+                .catch((error) => {
+                    console.error("Error removing item: ", error);
+                });
+        }
     });
     actionsCell.appendChild(deleteButton);
 }
