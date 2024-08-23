@@ -119,10 +119,11 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     if (!Array.isArray(voters)) {
         voters = []; // Si no es un array, inicializar como uno vacío
     }
-    voteCell.textContent = `${votes} (${voters.join(", ")})`;
-    voteCell.dataset.id = id;
-    voteCell.dataset.voters = JSON.stringify(voters);
 
+    // Mostrar el conteo de votos y una lista de votantes
+    voteCell.innerHTML = `${votes} (${voters.join(", ")})`;
+
+    // Agregar un botón para votar
     const voteButton = document.createElement('button');
     voteButton.textContent = 'Vote';
     voteButton.classList.add('vote');
@@ -132,15 +133,15 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     });
     voteCell.appendChild(voteButton);
 
-    // Agregar un botón para eliminar un voto
-    voters.forEach((voter, index) => {
-        const deleteVoteButton = document.createElement('button');
-        deleteVoteButton.textContent = 'Remove Vote';
-        deleteVoteButton.classList.add('remove-vote');
-        deleteVoteButton.addEventListener('click', function() {
+    // Agregar un botón para eliminar un voto para cada votante
+    voters.forEach((voter) => {
+        const removeVoteButton = document.createElement('button');
+        removeVoteButton.textContent = 'Remove Vote';
+        removeVoteButton.classList.add('remove-vote');
+        removeVoteButton.addEventListener('click', function() {
             removeVote(id, voter);
         });
-        voteCell.appendChild(deleteVoteButton);
+        voteCell.appendChild(removeVoteButton);
     });
 
     const actionsCell = newRow.insertCell(5);
@@ -162,7 +163,7 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     actionsCell.appendChild(deleteButton);
 }
 
-// Función para eliminar un voto
+// Función para eliminar un voto específico de un votante
 function removeVote(itemId, voterToRemove) {
     const itemRef = database.ref('items/' + itemId);
     itemRef.once('value').then(snapshot => {
