@@ -84,6 +84,7 @@ function loadItemsFromDatabase() {
     });
 }
 
+// Función para agregar ítems a la tabla
 function addItemToTable(id, name, price, image, url, votes, voters) {
     const table = document.getElementById('giftTable').getElementsByTagName('tbody')[0];
     const newRow = table.insertRow();
@@ -113,6 +114,11 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     urlCell.appendChild(link);
 
     const voteCell = newRow.insertCell(4);
+    
+    // Asegurar que voters sea un array antes de usar join
+    if (!Array.isArray(voters)) {
+        voters = []; // Si no es un array, inicializar como uno vacío
+    }
     voteCell.textContent = `${votes} (${voters.join(", ")})`;
     voteCell.dataset.id = id;
     voteCell.dataset.voters = JSON.stringify(voters);
@@ -144,6 +150,7 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     });
     actionsCell.appendChild(deleteButton);
 }
+
 
 function showModal() {
     document.getElementById('voteModal').style.display = 'block';
