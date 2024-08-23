@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Opciones de regalo para el Día del Armaaaaa</h1>
+    <h1>Opciones de regalo para el Día del Arma</h1>
     <!-- Formulario para agregar nuevos regalos -->
     <form id="giftForm">
         <input type="text" id="itemName" placeholder="Nombre del regalo" required>
@@ -36,20 +36,22 @@
     </table>
 
     <!-- Modal para confirmar votaciones -->
-    <div id="voteModal" style="display:none;">
-        <select id="personSelect">
-            <option value="">Selecciona tu nombre</option>
-            <option value="Hector M.">Hector M.</option>
-            <option value="Jose Maria G.">Jose Maria G.</option>
-            <option value="Luis M.">Luis M.</option>
-            <option value="Ricardo T.">Ricardo T.</option>
-            <option value="Manuel V.">Manuel V.</option>
-            <option value="Raul">Raul</option>
-            <option value="Tincho">Tincho</option>
-            <option value="Diego L.">Diego L.</option>
-        </select>
-        <button id="confirmVote">Confirmar Voto</button>
-        <button onclick="hideModal()">Cancelar</button>
+    <div id="voteModal" style="display:none;" class="modal">
+        <div class="modal-content">
+            <select id="personSelect">
+                <option value="">Selecciona tu nombre</option>
+                <option value="Hector M.">Hector M.</option>
+                <option value="Jose Maria G.">Jose Maria G.</option>
+                <option value="Luis M.">Luis M.</option>
+                <option value="Ricardo T.">Ricardo T.</option>
+                <option value="Manuel V.">Manuel V.</option>
+                <option value="Raul">Raul</option>
+                <option value="Tincho">Tincho</option>
+                <option value="Diego L.">Diego L.</option>
+            </select>
+            <button id="confirmVote">Confirmar Voto</button>
+            <button onclick="hideModal()">Cancelar</button>
+    </div>
     </div>
     
     <!-- Scripts de Firebase desde la CDN -->

@@ -110,7 +110,7 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     const urlCell = newRow.insertCell(3);
     const link = document.createElement('a');
     link.href = url;
-    link.textContent = 'View';
+    link.textContent = 'Enlace';
     link.target = '_blank';
     urlCell.appendChild(link);
 
@@ -126,7 +126,7 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
 
     // Agregar un botón para votar
     const voteButton = document.createElement('button');
-    voteButton.textContent = 'Vote';
+    voteButton.textContent = 'Votar';
     voteButton.classList.add('vote');
     voteButton.addEventListener('click', function() {
         selectedVoteCell = voteCell;
@@ -138,7 +138,7 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     // Agregar un botón para eliminar el ítem
     const actionsCell = newRow.insertCell(5);
     const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
+    deleteButton.textContent = 'Eliminar producto';
     deleteButton.classList.add('delete');
     deleteButton.addEventListener('click', function() {
         // Confirmar eliminación antes de proceder
@@ -159,7 +159,7 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
 function updateVoteCell(voteCell, id, votes, voters) {
     // Mostrar el conteo de votos y una lista de votantes
     voteCell.innerHTML = `${votes} votes (${voters.join(", ")})<br>
-    <button class="remove-vote" data-item-id="${id}">Remove Vote</button>`;
+    <button class="remove-vote" data-item-id="${id}">Eliminar voto</button>`;
 }
 
 // Función para mostrar el modal de votación
@@ -217,7 +217,7 @@ document.getElementById('confirmVote').addEventListener('click', function() {
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('remove-vote')) {
         const itemId = e.target.getAttribute('data-item-id');
-        const removeVote = prompt("Enter the name of the person whose vote you want to remove:", "");
+        const removeVote = prompt("Escriba el nombre de la persona que desea eliminar su voto, tal cual aparece (Ej: Diego L. ):", "");
 
         if (removeVote) {
             database.ref('items/' + itemId).once('value').then((snapshot) => {
