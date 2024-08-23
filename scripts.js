@@ -27,11 +27,11 @@ document.getElementById('giftForm').addEventListener('submit', function(e) {
     
     const itemName = document.getElementById('itemName').value;
     const itemPrice = document.getElementById('itemPrice').value;
-    const itemUrl = document.getElementById('itemUrl').value;
+    const itemUrl = document.getElementById('itemUrl').value || null;
     const itemImage = document.getElementById('itemImage').files[0];
 
     // Verificar que los campos requeridos no estén vacíos
-    if (itemName && itemPrice && itemUrl) {
+    if (itemName && itemPrice) {
         if (itemImage) {
             const reader = new FileReader();
             
@@ -56,7 +56,7 @@ function addItemToDatabase(name, price, image, url) {
         name: name,
         price: price,
         image: image || "",  // Imagen opcional, se guarda como cadena vacía si no se proporciona
-        url: url,
+        url: url || "",
         votes: 0,
         voters: []
     };
