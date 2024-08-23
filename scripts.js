@@ -29,18 +29,23 @@ document.getElementById('giftForm').addEventListener('submit', function(e) {
     const itemUrl = document.getElementById('itemUrl').value;
     const itemImage = document.getElementById('itemImage').files[0];
 
-    if (itemImage) {
-        const reader = new FileReader();
+    if (itemName && itemPrice && itemUrl) {
+        if (itemImage) {
+            const reader = new FileReader();
 
-        reader.onload = function(event) {
-            const imageDataUrl = event.target.result;
-            addItemToDatabase(itemName, itemPrice, imageDataUrl, itemUrl);
+            reader.onload = function(event) {
+                const imageDataUrl = event.target.result;
+                addItemToDatabase(itemName, itemPrice, imageDataUrl, itemUrl);
+                document.getElementById('giftForm').reset();
+            };
+
+            reader.readAsDataURL(itemImage);
+        } else {
+            addItemToDatabase(itemName, itemPrice, null, itemUrl); // Imagen es opcional
             document.getElementById('giftForm').reset();
-        };
-
-        reader.readAsDataURL(itemImage);
+        }
     } else {
-        alert('Por favor, selecciona una imagen.');
+        alert('Por favor, completa todos los campos obligatorios.');
     }
 });
 
@@ -48,7 +53,7 @@ function addItemToDatabase(name, price, image, url) {
     const newItem = {
         name: name,
         price: price,
-        image: image,
+        image: image || "",  // Imagen opcional, se guarda como cadena vacía si no se proporciona
         url: url,
         votes: 0,
         voters: []
@@ -89,9 +94,13 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     priceCell.textContent = `$${price}`;
 
     const imageCell = newRow.insertCell(2);
-    const img = document.createElement('img');
-    img.src = image;
-    imageCell.appendChild(img);
+    if (image) {
+        const img = document.createElement('img');
+        img.src = image;
+        imageCell.appendChild(img);
+    } else {
+        imageCell.textContent = 'No image';
+    }
 
     const urlCell = newRow.insertCell(3);
     const link = document.createElement('a');
@@ -157,6 +166,6 @@ document.getElementById('confirmVote').addEventListener('click', function() {
             alert('Esta persona ya ha votado por este ítem.');
         }
     } else {
-        alert('Please select a name before confirming your vote.');
+        alert('Por favor, selecciona un nombre antes de confirmar tu voto.');
     }
 });
