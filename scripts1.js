@@ -86,14 +86,6 @@ function loadItemsFromDatabase() {
 }
 
 // Función para agregar ítems a la tabla
-
-// Función para actualizar el contenido de la celda de votos
-function updateVoteCell(voteCell, id, votes, voters) {
-    // Mostrar el conteo de votos y una lista de votantes
-    voteCell.innerHTML = `${votes} voto/s (${voters.join(", ")})<br>
-    <button class="remove-vote" data-item-id="${id}">Eliminar voto</button>`;
-}
-
 function addItemToTable(id, name, price, image, url, votes, voters) {
     const table = document.getElementById('giftTable').getElementsByTagName('tbody')[0];
     const newRow = table.insertRow();
@@ -105,7 +97,6 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     priceCell.textContent = `$${price}`;
 
     const imageCell = newRow.insertCell(2);
-    
     if (image) {
         const img = document.createElement('img');
         img.src = image;
@@ -116,34 +107,6 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
         imageCell.textContent = 'No image';
     }
 
-    // Crear botón para modificar la imagen
-    const changeImageButton = document.createElement('button');
-    changeImageButton.textContent = 'Modificar Imagen';
-    
-    // Evento para abrir el cuadro de diálogo de archivo
-    changeImageButton.addEventListener('click', function() {
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*';  // Solo aceptar imágenes
-
-        // Manejar el evento de cambio cuando el usuario selecciona un archivo
-        fileInput.onchange = function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const newImage = e.target.result;  // Obtener la nueva imagen en base64
-                    updateImageInDatabase(id, newImage);  // Función para actualizar la imagen en la base de datos
-                    img.src = newImage;  // Actualizar la imagen en la tabla
-                };
-                reader.readAsDataURL(file);  // Leer el archivo seleccionado como una URL de datos
-            }
-        };
-        fileInput.click();  // Simular el clic para abrir el cuadro de diálogo de archivo
-    });
-
-    imageCell.appendChild(changeImageButton); // Añadir el botón a la celda de imagen
-
     const urlCell = newRow.insertCell(3);
     const link = document.createElement('a');
     link.href = url;
@@ -153,12 +116,15 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
 
     const voteCell = newRow.insertCell(4);
 
+    // Asegurar que voters sea un array antes de usar join
     if (!Array.isArray(voters)) {
-        voters = [];
+        voters = []; // Si no es un array, inicializar como uno vacío
     }
 
+    // Mostrar el conteo de votos y una lista de votantes
     updateVoteCell(voteCell, id, votes, voters);
 
+    // Agregar un botón para votar
     const voteButton = document.createElement('button');
     voteButton.textContent = 'Votar';
     voteButton.classList.add('vote');
@@ -169,11 +135,13 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     });
     voteCell.appendChild(voteButton);
 
+    // Agregar un botón para eliminar el ítem
     const actionsCell = newRow.insertCell(5);
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Eliminar producto';
     deleteButton.classList.add('delete');
     deleteButton.addEventListener('click', function() {
+        // Confirmar eliminación antes de proceder
         if (confirm('¿Estás seguro de que deseas eliminar este artículo?')) {
             database.ref('items/' + id).remove()
                 .then(() => {
@@ -187,17 +155,11 @@ function addItemToTable(id, name, price, image, url, votes, voters) {
     actionsCell.appendChild(deleteButton);
 }
 
-
-function updateImageInDatabase(id, newImage) {
-    database.ref('items/' + id).update({
-        image: newImage
-    }).then(() => {
-        console.log("Imagen actualizada correctamente.");
-        // Recargar los ítems para reflejar el cambio
-        loadItemsFromDatabase();
-    }).catch((error) => {
-        console.error("Error updating image: ", error);
-    });
+// Función para actualizar el contenido de la celda de votos
+function updateVoteCell(voteCell, id, votes, voters) {
+    // Mostrar el conteo de votos y una lista de votantes
+    voteCell.innerHTML = `${votes} voto/s (${voters.join(", ")})<br>
+    <button class="remove-vote" data-item-id="${id}">Eliminar voto</button>`;
 }
 
 // Función para mostrar el modal de votación

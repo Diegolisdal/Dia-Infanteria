@@ -50,8 +50,9 @@ th, td {
 }
 
 img {
-    max-width: 100px;
-    height: auto;
+  
+    max-height: 100px;
+    width: auto;
 }
 
 /* Estilos para el modal */
@@ -130,4 +131,14 @@ img {
     .modal-content button {
         
     }
+    #giftTable button {
+        font-size: 12px;
+        background-color: #b9b9b975;
+        padding: 1px;
+        border-radius: 5px;        
+        width: 100%;
+        max-width: 50px;
+        margin-bottom: 2px;
+        border: none;
+    }   
 }
